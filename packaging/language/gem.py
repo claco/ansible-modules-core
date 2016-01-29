@@ -58,6 +58,12 @@ options:
     required: false
     default: "yes"
     version_added: "1.3"
+  bindir:
+    description:
+      - Install gem binaries into a specific directory
+    required: false
+    default: None
+    version_added: "2.1"
   executable:
     description:
     - Override the path to the gem executable
@@ -193,6 +199,8 @@ def install(module):
         cmd.append('--user-install')
     else:
         cmd.append('--no-user-install')
+    if module.params['bindir']:
+        cmd.extend([ '--bindir', module.params['bindir'] ])
     if module.params['pre_release']:
         cmd.append('--pre')
     if not module.params['include_doc']:
@@ -217,8 +225,9 @@ def main():
             repository           = dict(required=False, aliases=['source'], type='str'),
             state                = dict(required=False, default='present', choices=['present','absent','latest'], type='str'),
             user_install         = dict(required=False, default=True, type='bool'),
+            bindir               = dict(required=False, default=None, type='str'),
             pre_release          = dict(required=False, default=False, type='bool'),
-            include_doc         = dict(required=False, default=False, type='bool'),
+            include_doc          = dict(required=False, default=False, type='bool'),
             version              = dict(required=False, type='str'),
             build_flags          = dict(required=False, type='str'),
         ),
